@@ -310,18 +310,43 @@ public class Transfer {
 	//update lastModifiedOn for all users
 	public void releaseGuideLine(String guideLineId){
 		checkMode();
+		
+		//find all impact users
 		StringBuffer sb = new StringBuffer();
-		sb.append("update ta_user set lastModifiedOn=now()");
+		sb.append("select highriskexpression,lowriskexpression from exam_examguideline where examguideline_id='");
+		sb.append(guideLineId);
+		sb.append("'");
 		
 		String sql = sb.toString();
-		logger.debug("Try to update user info due to add new guideline.[SQL]"+sql);
+		logger.debug("Try to query guideline expression from business system.[SQL]"+sql);
+		List<List<Column>> rows = connectionProvider.query(sql);
+		if(rows.size()==0)
+			return;
+		List<Column> row = rows.get(0);//only
+		String highRiskExpr = row.get(0).getVal().toString();
+		String lowRiskExpr = row.get(1).getVal().toString();
+		
+		//find impacted users by high risk expression
+		sb = new StringBuffer();
+		sb.append("update ta_user set lastModifiedOn=now() where ");
+		sb.append(highRiskExpr);
+		sql = sb.toString();
+		logger.debug("Try to update user info due to add new guideline by high risk expression.[SQL]"+sql);
+		connectionProvider.execute(sql);
+		
+		//find impacted users by low risk expression
+		sb = new StringBuffer();
+		sb.append("update ta_user set lastModifiedOn=now() where ");
+		sb.append(lowRiskExpr);
+		sql = sb.toString();
+		logger.debug("Try to update user info due to add new guideline by low risk expression.[SQL]"+sql);
 		connectionProvider.execute(sql);
 	}
 	
-	public void releaseGuideLine(){
-		checkMode();
-		releaseGuideLine("-1");//we don't have to use guideline ID
-	}
+//	public void releaseGuideLine(){
+//		checkMode();
+//		releaseGuideLine("-1");//we don't have to use guideline ID
+//	}
 	
 	//cancel a guideline
 	//remove prepared userRule data

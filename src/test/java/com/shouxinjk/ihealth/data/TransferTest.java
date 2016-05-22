@@ -63,7 +63,7 @@ public class TransferTest {
 	 public Object[][] createGuidelines() {
 	  return new Object[][] {
 	    { "1"},
-//	    { "e00f9b2d6bee4dc7aeb0d821f8ac068d"},
+	    { "1cfc1f8ff2dc4049b2422177cd3b9040"},
 	  };
 	 }
 	 
@@ -245,7 +245,7 @@ public class TransferTest {
 	 
 	 @Test(groups = { "fast" },dataProvider = "guidelines")
 	 public void releaseGuideLine(String guidelineId){
-		 transfer.releaseGuideLine();
+		 transfer.releaseGuideLine(guidelineId);
 		 assert true;
 	 }
 	 
