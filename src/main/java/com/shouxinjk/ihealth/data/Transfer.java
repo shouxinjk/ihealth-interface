@@ -65,6 +65,10 @@ public class Transfer {
 	 */
 	public void transferTag(String fieldName,String fieldType) throws Exception{
 		checkMode();
+		if(fieldName == null || fieldType == null)
+			return;
+		if(fieldName.trim().length()==0 || fieldType.trim().length()==0)
+			return;
 		StringBuffer sb = new StringBuffer();
 		sb.append("alter table ta_user add column ");
 		sb.append("tag_");

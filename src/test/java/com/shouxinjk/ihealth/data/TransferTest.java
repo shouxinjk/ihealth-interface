@@ -196,7 +196,7 @@ public class TransferTest {
 			int year1 = birthDate.getYear();
 			Date now = new Date();
 			int year2 = now.getYear();
-			age = year2-year1;
+			age = year2-year1+1;
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
