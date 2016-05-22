@@ -135,6 +135,17 @@ public class Transfer {
 		String sql = sb.toString();
 		logger.debug("Try to insert/update user info.[SQL]"+sql);
 		connectionProvider.execute(sql);
+		
+		//try to insert new checkup package
+		//insert ignore into tb_checkuppackage (checkuppackage_id,status,user_id,createby,createon) values('','pending','','interface',now())
+		sb = new StringBuffer("insert ignore into tb_checkuppackage (checkuppackage_id,status,user_id,createby,createon) values('");
+		sb.append(user.getUser_id());
+		sb.append("','pending','");
+		sb.append(user.getUser_id());
+		sb.append("','interface',now())");
+		sql = sb.toString();
+		logger.debug("Try to insert checkup package.[SQL]"+sql);
+		connectionProvider.execute(sql);
 	}
 	
 	//update ta_user set tags=? where user_id=?
