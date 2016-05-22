@@ -88,6 +88,11 @@ public class TransferTest {
 	 }
 	 
 	 @Test(groups = { "fast" },dataProvider = "userTags")
+	 public void transferUserTagByUserId(String userId,String tagName,String fieldName,String tagExpr,String value){
+		 transfer.transferUserTags(userId);
+	 }
+	 
+	 @Test(groups = { "fast" },dataProvider = "userTags")
 	 public void transferUserTag(String userId,String tagName,String fieldName,String tagExpr,String value){
 		 UserTag userTag = new UserTag();
 		 userTag.setUser_id(userId);
@@ -106,6 +111,11 @@ public class TransferTest {
 		 List<Column> row = rows2.get(0);
 		 Column column = row.get(0);
 		 assert(Integer.parseInt(column.getVal().toString())>0);
+	 }
+	 
+	 @Test(groups = { "fast" },dataProvider = "userDiseases")
+	 public void transferUserDiseaseByUserId(String userId,String personDisease,String familyDisease,String concernDisease){
+		 transfer.transferUserDiseases(userId);
 	 }
 	 
 	 @Test(groups = { "fast" },dataProvider = "userDiseases")

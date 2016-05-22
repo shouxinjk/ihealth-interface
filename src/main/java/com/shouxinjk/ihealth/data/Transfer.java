@@ -153,6 +153,27 @@ public class Transfer {
 	}
 	
 	//update ta_user set tags=? where user_id=?
+	public void transferUserTags(String userId){
+		checkMode();
+		
+		UserTag userTag = new UserTag();
+		userTag.setUser_id(userId);
+		//query for userTags from business system
+		StringBuffer sb = new StringBuffer("select b.name as tagname,b.fieldname,b.expression from sys_app_user_and_tag a left join admin_tag b on a.tag_id=b.tag_id where a.user_id='");
+		sb.append(userId);
+		sb.append("' and b.EXPRESSION is not null and b.fieldname is not null");
+
+		String sql = sb.toString();
+		logger.debug("Try to query user tags from business system.[SQL]"+sql);
+		List<List<Column>> rows = connectionProvider.query(sql);
+		for(List<Column> row:rows){
+			userTag.addTag(row.get(0).getVal().toString(), row.get(1).getVal().toString(), row.get(2).getVal().toString());
+		}
+		
+		transferUserTags(userTag);
+	}
+	
+	//update ta_user set tags=? where user_id=?
 	public void transferUserTags(UserTag userTag){
 		checkMode();
 		StringBuffer sb = new StringBuffer();
@@ -197,6 +218,49 @@ public class Transfer {
 		String sql = sb.toString();
 		logger.debug("Try to update user tag.[SQL]"+sql);
 		connectionProvider.execute(sql);
+	}
+	
+	//update ta_user set xxxDiseases=? where user_id=?
+	public void transferUserDiseases(String userId){
+		checkMode();
+		
+		UserDisease userDisease = new UserDisease();
+		userDisease.setUser_id(userId);
+		
+		//query for suffered diseases from business system
+		StringBuffer sb = new StringBuffer("select b.name from sys_app_user_and_personal_disease a left join admin_disease b on a.disease_id=b.disease_id where a.user_id='");
+		sb.append(userId);
+		sb.append("'");
+		String sql = sb.toString();
+		logger.debug("Try to query user suffered/personal diseases from business system.[SQL]"+sql);
+		List<List<Column>> rows = connectionProvider.query(sql);
+		for(List<Column> row:rows){
+			userDisease.addSufferedDisease(row.get(0).getVal().toString());
+		}
+		
+		//query for inheritable/family diseases from business system
+		sb = new StringBuffer("select b.name from sys_app_user_and_family_disease a left join admin_disease b on a.disease_id=b.disease_id where a.user_id='");
+		sb.append(userId);
+		sb.append("' and b.ISINHERITABLE = true");
+		sql = sb.toString();
+		logger.debug("Try to query user inherit/family diseases from business system.[SQL]"+sql);
+		rows = connectionProvider.query(sql);
+		for(List<Column> row:rows){
+			userDisease.addInheritDisease(row.get(0).getVal().toString());
+		}
+		
+		//query for concern/focus diseases from business system
+		sb = new StringBuffer("select b.name from sys_app_user_and_focus_disease a left join admin_disease b on a.disease_id=b.disease_id where a.user_id='");
+		sb.append(userId);
+		sb.append("' and b.ISHIGHINCIDENCE = true");
+		sql = sb.toString();
+		logger.debug("Try to query user concern/focus diseases from business system.[SQL]"+sql);
+		rows = connectionProvider.query(sql);
+		for(List<Column> row:rows){
+			userDisease.addConcernDisease(row.get(0).getVal().toString());
+		}
+		
+		transferUserDisease(userDisease);
 	}
 	
 	//update ta_user set disease=?,inheritDisease=?concernDisease=? where user_id=?
@@ -296,7 +360,7 @@ public class Transfer {
 	}
 	
 	private void checkMode(){
-		if("debug".equalsIgnoreCase(this.mode)){
+		if("disconnect".equalsIgnoreCase(this.mode)){
 			logger.warn("The data interface is running under debug mode.");
 			return;
 		}
