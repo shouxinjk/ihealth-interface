@@ -92,7 +92,7 @@ public class Transfer {
 	public void transferUser(User user){
 		checkMode();
 		StringBuffer sb = new StringBuffer();
-		sb.append("insert into ta_user (user_id,userName,name,ip,phone,email,openid,alias,birthday,sex,birthPlace,livePlace,marriageStatus,career,degree,avatar,height,weight,age,lastEvaluatedOn)");
+		sb.append("insert into ta_user (user_id,userName,name,ip,phone,email,openid,alias,birthday,sex,birthPlace,livePlace,marriageStatus,career,degree,avatar,height,weight,age,status,lastEvaluatedOn)");
 		sb.append("values (");//to insert new user
 		sb.append("'"+user.getUser_id()+"'");
 		sb.append(",'"+user.getUserName()+"'");	//用户名
@@ -113,6 +113,7 @@ public class Transfer {
 		sb.append(",'"+user.getHeight()+"'");			// 身高
 		sb.append(",'"+user.getWeight()+"'");			// 体重
 		sb.append(",'"+user.getAge()+"'");				// 年龄	
+		sb.append(",'modified'");				//status=modified
 		sb.append(",date_sub(now(),interval 1 day)");//lastEvaluatedOn
 		sb.append(") ");
 		sb.append("on duplicate key update ");//to update user info
@@ -134,6 +135,7 @@ public class Transfer {
 		sb.append(",height='"+user.getHeight()+"'");			// 身高
 		sb.append(",weight='"+user.getWeight()+"'");			// 体重
 		sb.append(",age='"+user.getAge()+"'");				// 年龄	
+		sb.append(",status='modified'");					//status =modified
 		sb.append(",lastModifiedOn=now()");//lastModifiedOn
 		
 		String sql = sb.toString();
