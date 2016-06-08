@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
+
 import com.shouxinjk.ihealth.data.util.Column;
 import com.shouxinjk.ihealth.data.util.Util;
 import com.zaxxer.hikari.HikariConfig;
@@ -24,6 +26,7 @@ public class HikariConnectionProvider{
     private Map<String, Object> configMap;
     private transient HikariDataSource dataSource;
     private int queryTimeoutSecs = 10;
+    Logger logger = Logger.getLogger(HikariConnectionProvider.class);
 	
 	public HikariConnectionProvider(Map<String, Object> hikariConfigMap,int timeout) {
         this.configMap = hikariConfigMap;
@@ -35,6 +38,7 @@ public class HikariConnectionProvider{
             Properties properties = new Properties();
             properties.putAll(configMap);
             HikariConfig config = new HikariConfig(properties);
+//           	config.setMaximumPoolSize(5);
             this.dataSource = new HikariDataSource(config);
             this.dataSource.setAutoCommit(false);
         }

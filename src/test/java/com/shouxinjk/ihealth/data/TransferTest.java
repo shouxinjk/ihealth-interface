@@ -21,7 +21,7 @@ public class TransferTest {
 	Transfer transfer;
 	 @BeforeClass
 	 public void setUp() {
-	   transfer = new Transfer();
+	   transfer = Transfer.getInstance();
 	 }
 	 
 	 @DataProvider(name = "tags")

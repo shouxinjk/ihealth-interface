@@ -22,11 +22,19 @@ public class Transfer {
 	HikariConnectionProvider connectionProvider;
 	Logger logger  = Logger.getLogger(Transfer.class);
 	String mode = "production";
+	
+	private static Transfer instance = null;
+	public static Transfer getInstance(){
+		if(instance == null){
+			instance = new Transfer();
+		}
+		return instance;
+	}
 	/**
 	 * Setup Transfer with default properties
 	 * Notice: this may be run under debug mode!
 	 */
-	public Transfer(){
+	private Transfer(){
 		//here we use default properties 
 		this(Transfer.class.getClassLoader().getResourceAsStream("ihealth-interface.properties"));
 	}
@@ -36,7 +44,7 @@ public class Transfer {
 	 * e.g. Transfer.class.getClassLoader().getResourceAsStream("ihealth-interface.properties")
 	 * @param is
 	 */
-	public Transfer(InputStream is){
+	private Transfer(InputStream is){
     	//here we load configurations from properties file
         try {
 			prop.load(is);
@@ -50,6 +58,7 @@ public class Transfer {
         jdbcConfigMap.put("dataSource.url", prop.getProperty("mysql.url"));//jdbc:mysql://localhost/test
         jdbcConfigMap.put("dataSource.user", prop.getProperty("mysql.user"));//root
         jdbcConfigMap.put("dataSource.password", prop.getProperty("mysql.password"));//password
+        jdbcConfigMap.put("maximumPoolSize", prop.getProperty("mysql.maximumPoolSize"));//mysql.maximumPoolSize
 
         this.mode = prop.getProperty("common.mode", "production");
         connectionProvider = new HikariConnectionProvider(jdbcConfigMap, 5);
