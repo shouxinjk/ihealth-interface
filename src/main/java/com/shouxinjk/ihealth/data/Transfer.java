@@ -58,8 +58,13 @@ public class Transfer {
         jdbcConfigMap.put("dataSource.url", prop.getProperty("mysql.url"));//jdbc:mysql://localhost/test
         jdbcConfigMap.put("dataSource.user", prop.getProperty("mysql.user"));//root
         jdbcConfigMap.put("dataSource.password", prop.getProperty("mysql.password"));//password
-        jdbcConfigMap.put("maximumPoolSize", prop.getProperty("mysql.maximumPoolSize"));//mysql.maximumPoolSize
-
+        try{
+	        jdbcConfigMap.put("maximumPoolSize", Integer.parseInt(prop.getProperty("mysql.maximumPoolSize")));//maxPoolSize
+        }catch(Exception ex){
+//        	jdbcConfigMap.put("maximumPoolSize", 5);
+        	logger.error("Cannot read maximumPoolSize from properties.",ex);
+        }
+        
         this.mode = prop.getProperty("common.mode", "production");
         connectionProvider = new HikariConnectionProvider(jdbcConfigMap, 5);
         connectionProvider.prepare();
